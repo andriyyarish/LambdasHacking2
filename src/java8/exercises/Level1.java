@@ -1,3 +1,7 @@
+package java8.exercises;
+
+
+import com.sun.tools.doclets.formats.html.SourceToHTMLConverter;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -8,9 +12,10 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -26,7 +31,7 @@ public class Level1 {
     @Test @Ignore
     public void printAllWords() {
         /* TODO */
-
+        wordList.stream().forEach(s-> System.out.println(s));
         // no assertions
     }
     
@@ -35,7 +40,7 @@ public class Level1 {
     
     @Test @Ignore
     public void upperCaseWords() {
-        List<String> output = null; /* TODO */
+        List<String> output = wordList.stream().map(s -> s.toUpperCase()).collect(Collectors.toList());  /* TODO */
         
         assertEquals(
             Arrays.asList(
@@ -50,7 +55,7 @@ public class Level1 {
     
     @Test @Ignore
     public void findEvenLengthWords() {
-        List<String> output = null; /* TODO */
+        List<String> output =wordList.stream().filter(s -> s.length()%2==0).collect(Collectors.toList()); /* TODO */
         
         assertEquals(
             Arrays.asList(
@@ -66,7 +71,7 @@ public class Level1 {
 
     @Test @Ignore
     public void countLinesInFile() throws IOException {
-        long count = 0L; /* TODO */
+        long count = reader.lines().count(); /* TODO */
         
         assertEquals(14, count);
     }
@@ -75,7 +80,7 @@ public class Level1 {
     
     @Test @Ignore
     public void joinLineRange() throws IOException {
-        String output = null; /* TODO */
+        String output = reader.lines().skip(2).limit(2).collect(Collectors.joining()); /* TODO */
         
         assertEquals(
             "But as the riper should by time decease," +
@@ -87,7 +92,7 @@ public class Level1 {
     
     @Test @Ignore
     public void lengthOfLongestLine() throws IOException {
-        int longest = 0; /* TODO */
+        int longest = reader.lines().mapToInt(s->s.length()).max().getAsInt(); /* TODO */
         
         assertEquals(longest, 53);
     }
@@ -99,7 +104,10 @@ public class Level1 {
     
     @Test @Ignore
     public void listOfAllWords() throws IOException {
-        List<String> output = null; /* TODO */
+        List<String> output = reader.
+                lines().
+                flatMap(s -> Stream.of(s.split(REGEXP))).
+                collect(Collectors.toList()); /* TODO */
         
         assertEquals(
             Arrays.asList(
@@ -125,7 +133,12 @@ public class Level1 {
     
     @Test @Ignore
     public void sortedLowerCase() throws IOException {
-        List<String> output = null; /* TODO */
+        List<String> output = reader.
+                lines().
+                flatMap(s -> Stream.of(s.split(REGEXP))).
+                filter(s -> Character.isLowerCase(s.charAt(0))).
+                sorted((s1,s2)-> s1.compareTo(s2)).
+                collect(Collectors.toList()); /* TODO */
         
         assertEquals(
             Arrays.asList(
@@ -153,7 +166,18 @@ public class Level1 {
 
     @Test @Ignore
     public void sortedLowerCaseDistinctByLengthThenAlphabetically() throws IOException {
-        List<String> output = null; /* TODO */
+
+        Comparator<String> compareLenght = (e1, e2) -> Integer.compare(
+                e1.length(), e2.length());
+
+        List<String> output = reader.                                     /* TODO */
+                lines().
+                flatMap(s -> Stream.of(s.split(REGEXP))).
+                filter(s -> Character.isLowerCase(s.charAt(0))).
+                distinct().
+                sorted().
+                sorted(compareLenght).
+                collect(Collectors.toList());
         
         assertEquals(
             Arrays.asList(
