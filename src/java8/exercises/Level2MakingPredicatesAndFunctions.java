@@ -29,7 +29,7 @@ public class Level2MakingPredicatesAndFunctions {
         //TODO: write your implementation instead of nulls and 0
         Predicate<Integer> getOdd = num -> num%2 == 0;
 
-        //when
+        //whena
         List<Integer> odd2To5Values = numbers.stream().
                 filter(getOdd).
                 skip(2).limit(3).
