@@ -13,10 +13,12 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
+import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static java.util.stream.Collectors.counting;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 /**
@@ -164,7 +166,7 @@ public class Level1 {
 // Exercise 9: Sort unique, lower-cased words by length, then alphabetically
 // within length, and place the result into an output list.
 
-    @Test @Ignore
+    @Test
     public void sortedLowerCaseDistinctByLengthThenAlphabetically() throws IOException {
 
         Comparator<String> compareLenght = (e1, e2) -> Integer.compare(
@@ -202,9 +204,10 @@ public class Level1 {
 // list of words of that length. Don't bother with uniqueness or lower-
 // casing the words.
     
-    @Test @Ignore
+    @Test
     public void mapLengthToWordList() throws IOException {
-        Map<Integer, List<String>> map = null; /* TODO */
+        Map<Integer, List<String>> map = reader.lines().
+                flatMap(s -> Stream.of(s.split(REGEXP))).collect(Collectors.groupingBy(s -> s.length())); /* TODO */
         
         assertEquals(6, map.get(7).size());
         assertEquals(Arrays.asList("increase", "ornament"), map.get(8));
@@ -219,9 +222,12 @@ public class Level1 {
 // lower case. Extra challenge: implement two solutions, one that uses
 // groupingBy() and the other that uses toMap().
     
-    @Test @Ignore
+    @Test
     public void wordFrequencies() throws IOException {
-        Map<String, Long> map = null; /* TODO */
+        Map<String, Long> map = reader.lines().
+         flatMap(s -> Stream.of(s.split(REGEXP))).
+         collect(Collectors.groupingBy(Function.identity(),counting()));  /* TODO */
+//        Map<String, Long> map = reader.lines().flatMap(s -> Stream.of(s.split(REGEXP))).collect(Collectors.toMap(Function.identity(),counting()));  /* TODO */
 
         assertEquals(2L, (long)map.get("tender"));
         assertEquals(6L, (long)map.get("the"));
