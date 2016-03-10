@@ -190,7 +190,7 @@ public class Level3 {
 // list of words of that length. Don't bother with uniqueness or lower-
 // casing the words.
     
-    @Test @Ignore
+    @Test 
     public void mapLengthToWordList() throws IOException {
         Map<Integer, List<String>> map = null; /* TODO */
         
