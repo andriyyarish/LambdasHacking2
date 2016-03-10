@@ -1,3 +1,5 @@
+package java8.exercises;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -9,8 +11,11 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -20,19 +25,19 @@ public class Level3 {
 // Exercise 1: Print out all the words in wordList, which is
 // a static List<String> defined at the bottom of this file.
 
-    @Test @Ignore
+    @Test
     public void printAllWords() {
         /* TODO */
-
+        wordList.stream().forEach(w -> System.out.println(w));
         // no assertions
     }
     
 // Exercise 2: Convert all words in wordList to upper case,
 // and gather the result into an output list.
     
-    @Test @Ignore
+    @Test
     public void upperCaseWords() {
-        List<String> output = null; /* TODO */
+        List<String> output = wordList.stream().map(w -> w.toUpperCase()).collect(Collectors.toList()); ; /* TODO */
         
         assertEquals(
             Arrays.asList(
@@ -45,9 +50,9 @@ public class Level3 {
 // Exercise 3: Find all the words in wordList that have even length
 // and put them into an output list.
     
-    @Test @Ignore
+    @Test
     public void findEvenLengthWords() {
-        List<String> output = null; /* TODO */
+        List<String> output = wordList.stream().filter(s -> s.length()%2==0).collect(Collectors.toList()); /* TODO */
         
         assertEquals(
             Arrays.asList(
@@ -61,18 +66,18 @@ public class Level3 {
 // The text file is "SonnetI.txt" (Shakespeare's first sonnet) which is
 // located at the root of this NetBeans project.
 
-    @Test @Ignore
+    @Test
     public void countLinesInFile() throws IOException {
-        long count = 0L; /* TODO */
+        long count = reader.lines().count(); /* TODO */
         
         assertEquals(14, count);
     }
     
 // Exercise 5: Join lines 3-4 from the text file into a single string.
     
-    @Test @Ignore
+    @Test
     public void joinLineRange() throws IOException {
-        String output = null; /* TODO */
+        String output = reader.lines().skip(2).limit(2).collect(Collectors.joining()); ; /* TODO */
         
         assertEquals(
             "But as the riper should by time decease," +
@@ -82,9 +87,9 @@ public class Level3 {
 
 // Exercise 6: Find the length of the longest line in the file.
     
-    @Test @Ignore
+    @Test
     public void lengthOfLongestLine() throws IOException {
-        int longest = 0; /* TODO */
+        int longest = reader.lines().mapToInt(l -> l.length()).max().getAsInt(); /* TODO */
         
         assertEquals(longest, 53);
     }
@@ -94,9 +99,9 @@ public class Level3 {
 // Splitting this way results in "words" that are the empty string,
 // which should be discarded. REGEXP is defined at the bottom of this file.
     
-    @Test @Ignore
+    @Test
     public void listOfAllWords() throws IOException {
-        List<String> output = null; /* TODO */
+        List<String> output = reader.lines().flatMap(line -> Stream.of(line.split(REGEXP))).collect(Collectors.toList()); /* TODO */
         
         assertEquals(
             Arrays.asList(
@@ -120,9 +125,12 @@ public class Level3 {
     
 // Exercise 8: Create a list containing the words, lowercased, in alphabetical order.
     
-    @Test @Ignore
+    @Test
     public void sortedLowerCase() throws IOException {
-        List<String> output = null; /* TODO */
+        List<String> output = reader.lines().
+                flatMap( line-> Stream.of(line.split(REGEXP))).
+                filter(word -> Character.isLowerCase(word.charAt(0))).sorted().
+                collect(Collectors.toList()); /* TODO */
         
         assertEquals(
             Arrays.asList(
@@ -148,9 +156,16 @@ public class Level3 {
 // Exercise 9: Sort unique, lower-cased words by length, then alphabetically
 // within length, and place the result into an output list.
 
-    @Test @Ignore
+    @Test
     public void sortedLowerCaseDistinctByLengthThenAlphabetically() throws IOException {
-        List<String> output = null; /* TODO */
+        Comparator<String> comparator = Comparator.comparing(word -> word.length());
+        comparator = comparator.thenComparing(Comparator.comparing(word -> word.charAt(0)));
+
+        List<String> output = reader.lines().
+                flatMap(line -> Stream.of(line.split(REGEXP))).
+                filter(word -> Character.isLowerCase(word.charAt(0))).
+                collect(Collectors.toSet()).stream().
+                sorted(comparator).collect(Collectors.toList()); /* TODO */
         
         assertEquals(
             Arrays.asList(
@@ -224,6 +239,8 @@ public class Level3 {
             map.get("t").get(3).toString());
         assertEquals("[beauty, bright]", map.get("b").get(6).toString());
     }
+
+
     
 // ===== TEST INFRASTRUCTURE ==================================================
 

@@ -1,10 +1,8 @@
 package java8.exercises;
 
 
-import com.sun.tools.doclets.formats.html.SourceToHTMLConverter;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.BufferedReader;
@@ -12,9 +10,11 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
 import java.util.function.Function;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -30,7 +30,7 @@ public class Level1 {
 // Exercise 1: Print out all the words in wordList, which is
 // a static List<String> defined at the bottom of this file.
 
-    @Test @Ignore
+    @Test
     public void printAllWords() {
         /* TODO */
         wordList.stream().forEach(s-> System.out.println(s));
@@ -40,7 +40,7 @@ public class Level1 {
 // Exercise 2: Convert all words in wordList to upper case,
 // and gather the result into an output list.
     
-    @Test @Ignore
+    @Test
     public void upperCaseWords() {
         List<String> output = wordList.stream().map(s -> s.toUpperCase()).collect(Collectors.toList());  /* TODO */
         
@@ -55,7 +55,7 @@ public class Level1 {
 // Exercise 3: Find all the words in wordList that have even length
 // and put them into an output list.
     
-    @Test @Ignore
+    @Test
     public void findEvenLengthWords() {
         List<String> output =wordList.stream().filter(s -> s.length()%2==0).collect(Collectors.toList()); /* TODO */
         
@@ -71,7 +71,7 @@ public class Level1 {
 // The text file is "SonnetI.txt" (Shakespeare's first sonnet) which is
 // located at the root of this NetBeans project.
 
-    @Test @Ignore
+    @Test
     public void countLinesInFile() throws IOException {
         long count = reader.lines().count(); /* TODO */
         
@@ -80,7 +80,7 @@ public class Level1 {
     
 // Exercise 5: Join lines 3-4 from the text file into a single string.
     
-    @Test @Ignore
+    @Test
     public void joinLineRange() throws IOException {
         String output = reader.lines().skip(2).limit(2).collect(Collectors.joining()); /* TODO */
         
@@ -92,7 +92,7 @@ public class Level1 {
 
 // Exercise 6: Find the length of the longest line in the file.
     
-    @Test @Ignore
+    @Test
     public void lengthOfLongestLine() throws IOException {
         int longest = reader.lines().mapToInt(s->s.length()).max().getAsInt(); /* TODO */
         
@@ -104,7 +104,7 @@ public class Level1 {
 // Splitting this way results in "words" that are the empty string,
 // which should be discarded. REGEXP is defined at the bottom of this file.
     
-    @Test @Ignore
+    @Test
     public void listOfAllWords() throws IOException {
         List<String> output = reader.
                 lines().
@@ -133,7 +133,7 @@ public class Level1 {
     
 // Exercise 8: Create a list containing the words, lowercased, in alphabetical order.
     
-    @Test @Ignore
+    @Test
     public void sortedLowerCase() throws IOException {
         List<String> output = reader.
                 lines().
@@ -247,9 +247,10 @@ public class Level1 {
 // representation of the result would be:
 //     {f={3=[foo]}, b={3=[bar, baz], 4=[bazz]}}.
 
-    @Test @Ignore
+    @Test
     public void nestedMaps() throws IOException {
-        Map<String, Map<Integer, List<String>>> map = null; /* TODO */
+        Map<String, List<String>> helper = reader.lines().flatMap(s->Stream.of(s.split(REGEXP))).collect(Collectors.groupingBy(s->s.substring(0,1)));
+        Map<String, Map<Integer, List<String>>> map = null;//helper.values().stream().flatMap(s -> s.iterator()).collect(Collectors.groupingBy()) ; /* TODO */
 
         assertEquals("[From, Feed]", map.get("F").get(4).toString());
         assertEquals("[by, be, by]", map.get("b").get(2).toString());

@@ -2,11 +2,13 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.Arrays;
+import java.util.IntSummaryStatistics;
 import java.util.List;
 import java.util.LongSummaryStatistics;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static org.junit.Assert.assertEquals;
 
@@ -15,7 +17,7 @@ import static org.junit.Assert.assertEquals;
  */
 public class Level2MakingPredicatesAndFunctions {
 
-    List<Integer> numbers = Arrays.asList(2, 8, 5, 1, 6, 4, 9, 7, 8, 4, 0);
+    List<Integer> numbers = Arrays.asList(2, 8, 5, 1, 6, 4,9, 7, 8, 4, 0); //9 deleted from list
 
 
     /* Exercise 1
@@ -75,7 +77,7 @@ public class Level2MakingPredicatesAndFunctions {
 
         //given
         Predicate<Integer> getOdd = n -> n%2!=0;
-
+        //Stream<Integer> intOdStream = numbers.stream().filter(getOdd);
         //when
         //1)
         int maxInStream = numbers.stream().filter(getOdd).max((a,b) -> a.compareTo(b)).get();
@@ -96,7 +98,8 @@ public class Level2MakingPredicatesAndFunctions {
         int maxUsingCollectorsReduce = 0;
 
         //6)
-        int maxUsingCollectorsSummarizing = 0;
+        IntSummaryStatistics intStat = numbers.stream().filter(getOdd).mapToInt(n->n).summaryStatistics();
+        int maxUsingCollectorsSummarizing = intStat.getMax();
 
         System.out.println(" maxInIntStream = " + maxInIntStream + " maxInIntStream = "+ maxInIntStream );
         System.out.println( " maxUsingReduce = " + maxUsingReduce + " maxUsingCollectorsReduceOwn" + maxUsingCollectorsReduceOwn);
@@ -125,10 +128,13 @@ public class Level2MakingPredicatesAndFunctions {
 
         //given
         final int intToCompare = 4;
-        Function<Integer, Predicate<Integer>> getGreaterThan = null;
+        Predicate<Integer> predInt = s -> s>intToCompare;
+        System.out.println(predInt.test(3));
+//        Function<Integer, Predicate<Integer>> getGreaterThan = (n,predicate) ->
+//                            { if(predInt.test(n)) return new Integer(n) ;};
 
         //when
-        List<Integer> actual = null;
+        List<Integer> actual = numbers.stream().filter(s->predInt.test(s)).collect(Collectors.toList());
 
         //then
         assertEquals(Arrays.asList(8, 5, 6, 9, 7, 8), actual);
