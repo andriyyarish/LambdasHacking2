@@ -89,7 +89,7 @@ public class Level2MakingPredicatesAndFunctions {
         int maxUsingReduce = numbers.stream().filter(getOdd).reduce(0,(a,b) -> a.compareTo(b)).intValue();
 
         //3.2)
-        int maxUsingCollectorsReduceOwn = 0;
+        int maxUsingCollectorsReduceOwn = numbers.stream().filter(getOdd).reduce(Integer::max).get();
 
         //4)
         int maxUsingComparatorMax = 0;

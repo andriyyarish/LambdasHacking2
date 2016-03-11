@@ -1,5 +1,6 @@
 package java8.exercises;
 
+import com.sun.org.apache.regexp.internal.RE;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -14,9 +15,12 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static java.util.stream.Collectors.counting;
+import static java.util.stream.Collectors.groupingBy;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 
@@ -192,7 +196,9 @@ public class Level3 {
     
     @Test 
     public void mapLengthToWordList() throws IOException {
-        Map<Integer, List<String>> map = null; /* TODO */
+        Map<Integer, List<String>> map = reader.lines().
+                flatMap(l -> Stream.of(l.split(REGEXP))).
+                collect(groupingBy(s -> s.length())) ; /* TODO */
         
         assertEquals(6, map.get(7).size());
         assertEquals(Arrays.asList("increase", "ornament"), map.get(8));
@@ -207,9 +213,11 @@ public class Level3 {
 // lower case. Extra challenge: implement two solutions, one that uses
 // groupingBy() and the other that uses toMap().
     
-    @Test @Ignore
+    @Test
     public void wordFrequencies() throws IOException {
-        Map<String, Long> map = null; /* TODO */
+        Map<String, Long> map = reader.lines().
+                flatMap(line ->Stream.of(line.split(REGEXP))).
+                collect(groupingBy(Function.identity(),counting())); /* TODO */
 
         assertEquals(2L, (long)map.get("tender"));
         assertEquals(6L, (long)map.get("the"));
@@ -229,9 +237,15 @@ public class Level3 {
 // representation of the result would be:
 //     {f={3=[foo]}, b={3=[bar, baz], 4=[bazz]}}.
 
-    @Test @Ignore
+    @Test
     public void nestedMaps() throws IOException {
-        Map<String, Map<Integer, List<String>>> map = null; /* TODO */
+        Map<String, Map<Integer, List<String>>> map = reader.lines().
+                flatMap(line -> Stream.of(line.split(REGEXP))).
+                collect(groupingBy(word -> word.substring(0,1),
+                        groupingBy(String::length))); /* TODO */
+
+
+
 
         assertEquals("[From, Feed]", map.get("F").get(4).toString());
         assertEquals("[by, be, by]", map.get("b").get(2).toString());
